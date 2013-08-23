@@ -15,18 +15,6 @@ to create resource preference rules based on the properties.  Users (via resourc
 host that have the properties set to specific values.  For instance, a JRuby enabler running a Puppet component can tag the engine daemon with which manifest
 was applied.  You can then create a resource preference rule that only allows a component to run on an engine where that manifest was applied.  
 
-A Server Hook that allows an Enabler to tag an Engine Daemon as having some specific property and also indicate whether other 
-enablers are now allowed to use this host (for example to tag that some OS level change was applied and that as a result of this 
-no other Enablers that want to modify the OS should run here.)  
-
-This is useful now we are venturing into the world of host configuration with Enablers for Puppet as it allows us to create rules 
-forcing Components to only run on hosts that have had a specific Puppet Manifest applied, but also has a general application in forcing 
-or preventing co-location of components using resource preference rules based on settings within an Enabler.
-
-To use it, you simply need to add two runtime context variables to your Enabler, one with the value of the property you are tagging 
-the Daemon with and the other with true/false to indicate whether other enablers of the same type will subsequently be allowed to 
-run on this host.
-
 
 Supported Platforms
 --------------------------------------
