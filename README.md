@@ -57,7 +57,8 @@ Configuration property descriptions:
 
 Packaging
 --------------------------------------
-Build the maven project.
+The Asset Manager jar is created by building the maven project. The build depends on the SilverFabricSDK jar file that is distributed with TIBCO Silver Fabric. 
+The SilverFabricSDK.jar file needs to be referenced in the maven pom.xml or it can be placed in the project root directory.
 
 ```bash
 mvn package
@@ -79,10 +80,10 @@ Component Runtime Context Variables
 The following are the Component Runtime Context Variables used by the asset manager.  'RequireExclusivity' and 'PropertyList' are mandatory for activating components.  
 The others are optional. 
 
-* **RequireExclusivity** - Are other enablers of the same time allowed to run on this host. 
+* **RequireExclusivity** - Are other enablers of the same type allowed to run on this host. 
     * Type: String
     * value: true or false
-* **PropertyList** - A list of comma separated properties that you want to tag the engine daemon with. The variable name needs to be unique because engine properties are global. 
+* **PropertyList** - A list of comma separated properties that you want to tag the engine daemon with. The property name needs to be unique because engine properties are global. 
     * Type: String
     * value: property1, property2
 * **removePropertiesOnShutdown** - Remove the properties that were created when the component is deactivated.
