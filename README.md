@@ -27,11 +27,11 @@ XML Deployment Descriptor
 The following is an XML Deployment Descriptor example.
 
 ```XML
-<enginedaemonproperty class="org.fabrician.assetmanager.daemonproperty.EngineProperty">
+<enginedaemonproperty class="org.fabrician.assetmanager.engineproperty.EngineProperty">
     <property name="enabled" value="True"/>
     <property name="description" value="Engine Daemon Property Asset Manager"/>
     <property name="name" value="Silver Fabric Engine Daemon Properties Asset Manager for Puppet"/>
-    <config class="org.fabrician.assetmanager.daemonproperty.EngineDaemonPropertyConfig">
+    <config class="org.fabrician.assetmanager.engineproperty.EnginePropertyConfig">
         <property name="enablerName" value="Ruby 1.9.3"/>  
         <property name="exclusivityTagVariableName" value="PuppetRequireExclusivity"/>      
         <property name="exclusivityTag" value="PuppetExclusive"/>        
