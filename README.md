@@ -91,10 +91,4 @@ The others are optional.
     * value: true or false
 * **undoMode** - Allows for removal of properties created by another component to be removed by an activating component. 
     * Type: String
-    * value: true or false    
-* **autoStopStack** - Used to stop the stack after properties are set on the engine daemon, if the stack is not needed. 
-    * Type: String
     * value: true or false
-
-
-

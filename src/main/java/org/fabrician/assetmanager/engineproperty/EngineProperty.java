@@ -13,13 +13,10 @@ import java.util.logging.Level;
 import com.datasynapse.fabric.admin.AdminManager;
 import com.datasynapse.fabric.admin.ComponentAdmin;
 import com.datasynapse.fabric.admin.EngineDaemonAdmin;
-import com.datasynapse.fabric.admin.StackAdmin;
 import com.datasynapse.fabric.admin.info.ComponentInfo;
 import com.datasynapse.fabric.admin.info.FabricEngineDaemonInfo;
 import com.datasynapse.fabric.admin.info.RuntimeContextVariableInfo;
-import com.datasynapse.fabric.admin.info.StackInfo;
 import com.datasynapse.fabric.asset.DefaultAssetManager;
-import com.datasynapse.fabric.broker.FabricServerEvent;
 import com.datasynapse.fabric.common.ActivationInfo;
 import com.datasynapse.gridserver.admin.Property;
 
@@ -70,11 +67,9 @@ public class EngineProperty extends DefaultAssetManager{
     @Override
     public void handleComponentInstanceAdded(ActivationInfo component) throws Exception {
         ComponentAdmin ca = AdminManager.getComponentAdmin();
-        StackAdmin sa = AdminManager.getStackAdmin();
         EngineDaemonAdmin eda = AdminManager.getEngineDaemonAdmin();
         EnginePropertyConfig config = getPropertyConfig();
         final String undoModeRCV = "undoMode";
-        final String autoStopStackRCV = "autoStopStack";
         String componentName = null;
         String ename = component.getEnabler();
         if (!config.getEnablerName().equalsIgnoreCase(ename)) {
@@ -87,7 +82,6 @@ public class EngineProperty extends DefaultAssetManager{
         String exclusivity = null;
         String manifest = null;
         String undoMode = "false";
-        String autoStop = "false";
         
         RuntimeContextVariableInfo[] rcvis = aci.getRuntimeContextVariables();              
         for(RuntimeContextVariableInfo rvar : rcvis){
@@ -97,9 +91,6 @@ public class EngineProperty extends DefaultAssetManager{
             } else if(rvar.getName().equalsIgnoreCase(config.getPropertyTagVariableName())){
                 getLogger().log(Level.FINE, "ComponentInstanceAdded Event. Will modify "+ config.getPropertyList() + " property on daemon with the value " + rvar.getValue());
                 manifest = rvar.getValue().toString();
-            } else if(rvar.getName().equalsIgnoreCase(autoStopStackRCV)){
-                getLogger().log(Level.FINE, "ComponentInstanceAdded Event. autoStopStack = " + rvar.getValue());
-                autoStop = rvar.getValue().toString();
             } else if(rvar.getName().equalsIgnoreCase(undoModeRCV)){
                 getLogger().log(Level.FINE, "ComponentInstanceAdded Event. undoMode = " + rvar.getValue());
                 undoMode = rvar.getValue().toString();
@@ -108,8 +99,9 @@ public class EngineProperty extends DefaultAssetManager{
         
         // check we got both of our required properties
         if (exclusivity == null || manifest == null) {
-            // we are missing one or more of our properties, so quit
-            getLogger().log(Level.SEVERE, "Component Properties are missing, unable to process Engine properties update...");
+            // we are missing one or more of our mandatory properties, either it’s not a Component which tags the Engine
+            // or it’s been misconfigured, either way we need to quit
+            getLogger().log(Level.FINE, "Component Properties are missing, unable to process Engine properties update...");
             return;
         }
         String ipaddr = component.getProperty(ActivationInfo.IP_ADDRESS);    
@@ -157,11 +149,6 @@ public class EngineProperty extends DefaultAssetManager{
                             }
                         }
                         eda.setProperty(daemonID, config.getPropertyList(), manifest);
-                        // once we have set the properties on the daemon
-                        // we can stop the stack if it is not needed
-                        if (autoStop.equalsIgnoreCase("true")){
-                            sa.setStackMode(FabricServerEvent.STACK_NAME, StackInfo.MODE_STOPPED);
-                        }
                         break;
                     } else {
                         // Removing properties is more complex, if there was only one applied manifest we can just blat them 
